@@ -1,0 +1,123 @@
+import time
+import random
+import pygame
+
+pad = 20
+nsymb = 4
+row, col = 4, 4
+ntiles = row * col
+tile_h, tile_w = 100, 100
+
+white = (255, 255, 255)
+
+disp_h = (row + 1) * pad + row * tile_w
+disp_w = (col + 1) * pad + col * tile_h
+disp = pygame.display.set_mode((disp_h, disp_w))
+#
+# image = pygame.image.load("aleph.png")
+
+pygame.font.init()
+font = pygame.font.Font('freesansbold.ttf', 115)
+clock = pygame.time.Clock()
+
+class Tile: #קלף
+   # SIDE_DOWN = img
+    def int(self, i, j, image, letter):
+        self.image = pygame.image.load(image)
+        self.letter = letter
+        self.side = False
+        self.found = False
+        self.reveal = False
+        x = (i + 1) * pad + i * tile_w
+        y = (j + 1) * pad + j * tile_h
+        self.rect = pygame.Rect(x, y, tile_w, tile_h)
+
+    #to turn the card
+    def reveal(self):
+        self.reveal = True
+
+    def unreveal(self):
+        self.reveal = False
+
+    def show(self):
+        self.reveal = True
+        disp.blit(self.image, self.rect.topleft)
+
+    def found(self):
+        self.found = True
+
+def game_play():
+
+    tile_card = {}
+    tile_card.append({1, ("Alef_ot.jpg" ,"alef.jpg")})
+    tile_card.append({2, ("bet_ot.jpg" ,"bet.jpg")})
+    tile_card.append({3, ("gimel_ot.jpg" ,"gimel.jpg")})
+    tile_card.append({4, ("dalet_ot.jpg" ,"dalet.jpg")})
+    tile_card.append({5, ("hey_ot.jpg" ,"hey.jpg")})
+    tile_card.append({6, ("vav_ot.jpg" ,"vav.jpg")})
+    tile_card.append({7, ("zain_ot.jpg" ,"zain.jpg")})
+    tile_card.append({8, ("chet_ot.jpg" ,"chet.jpg")})
+    tile_card.append({9, ("tet_ot.jpg" ,"tet.jpg")})
+    tile_card.append({10, ("yod_ot.jpg" ,"yod.jpg")})
+    tile_card.append({11, ("caf_ot.jpg" ,"caf.jpg")})
+    tile_card.append({12, ("lamed_ot.jpg" ,"lamed.jpg")})
+    tile_card.append({13, ("mem_ot.jpg" ,"mem.jpg")})
+    tile_card.append({14, ("noon_ot.jpg" ,"noon.jpg")})
+    tile_card.append({15, ("samech_ot.jpg" ,"samech.jpg")})
+    tile_card.append({16, ("ayn_ot.jpg" ,"ayn.jpg")})
+    tile_card.append({17, ("pey_ot.jpg" ,"pey.jpg")})
+    tile_card.append({18, ("tsadic_ot.jpg" ,"tsadic.jpg")})
+    tile_card.append({19, ("kof_ot.jpg" ,"kof.jpg")})
+    tile_card.append({20, ("resh_ot.jpg" ,"resh.jpg")})
+    tile_card.append({21, ("shin_ot.jpg" ,"shin.jpg")})
+    tile_card.append({22, ("tav_ot.jpg" ,"tav.jpg")})
+
+    tile_position = []
+
+    list_of_random = random.sample(range(1,22), 8)
+
+    for ran in list_of_random:
+        tile_position.append((ran, tile_card[ran][0]))
+        tile_position.append((ran, tile_card[ran][1]))
+
+
+    list_of_position = []
+
+    final_tile = []
+    for i in range(4):
+        for j in range(4):
+            list_of_position.append((i,j))
+
+    random.shuffle(list_of_position)
+
+    for i in range(16):
+
+        final_tile.append(Tile(list_of_position[i][0],list_of_position[i][1], tile_position[i][1],tile_position[i][0]))
+
+    return(final_tile)
+   
+def refresh (Tile,start= False):
+    for tile in Tile:
+        if start == True or tile.reveal == True and tile.found == False:
+            tile.hide()
+            pygame.draw.rect(disp, white, tile.rect)
+
+
+    game = True
+
+while game:
+
+    all_Tile  = game_play()
+    shown = []
+    while len(shown) < 16:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                game = False
+                pygame.quit()
+
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                loc = event.dict("pos")
+                for i, tile in enumerate(tiles):
+                    if tile.rect.collidepoint(loc):
+                        tile.show()
+                        pygame.display.update()
